@@ -94,7 +94,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               </div>
 
               <ErrorMessage
-                error={errorMessage}
+                error={errorMessage && "Code de promotion invalide"}
                 data-testid="discount-error-message"
               />
             </>
