@@ -1,107 +1,150 @@
 "use client"
 
-import { Popover, PopoverPanel, Transition } from "@headlessui/react"
-import { ArrowRightMini, XMark } from "@medusajs/icons"
-import { Text, clx, useToggleState } from "@medusajs/ui"
-import { Fragment } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { XMark } from "@medusajs/icons"
+import { Text, useToggleState } from "@medusajs/ui"
+import { useState } from "react"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CountrySelect from "../country-select"
 import { HttpTypes } from "@medusajs/types"
 
 const SideMenuItems = {
-  Home: "/",
-  Store: "/store",
-  Account: "/account",
-  Cart: "/cart",
+  Accueil: "/",
+  Boutique: "/store",
+  Compte: "/account",
 }
 
 const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
+  const [isOpen, setIsOpen] = useState(false)
   const toggleState = useToggleState()
 
   return (
-    <div className="h-full">
-      <div className="flex items-center h-full">
-        <Popover className="h-full flex">
-          {({ open, close }) => (
-            <>
-              <div className="relative flex h-full">
-                <Popover.Button
-                  data-testid="nav-menu-button"
-                  className="relative h-full flex items-center transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base"
-                >
-                  Menu
-                </Popover.Button>
-              </div>
+    <>
+      {/* Menu Desktop - Liens visibles */}
+      <nav className="hidden small:flex items-center gap-x-6 h-full">
+        {Object.entries(SideMenuItems).map(([name, href]) => (
+          <LocalizedClientLink
+            key={name}
+            href={href}
+            className="hover:text-ui-fg-base transition-colors"
+            data-testid={`${name.toLowerCase()}-link`}
+          >
+            {name}
+          </LocalizedClientLink>
+        ))}
+      </nav>
 
-              <Transition
-                show={open}
-                as={Fragment}
-                enter="transition ease-out duration-150"
-                enterFrom="opacity-0"
-                enterTo="opacity-100 backdrop-blur-2xl"
-                leave="transition ease-in duration-150"
-                leaveFrom="opacity-100 backdrop-blur-2xl"
-                leaveTo="opacity-0"
+      {/* Menu Mobile - Burger */}
+      <div className="small:hidden h-full flex items-center">
+        {/* Bouton Hamburger */}
+        <button
+          onClick={() => setIsOpen(true)}
+          className="relative h-full flex items-center transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base p-4"
+          data-testid="nav-menu-button"
+          aria-label="Ouvrir le menu"
+        >
+          <div className="flex flex-col gap-1.5 w-6">
+            <span className="block h-0.5 w-full bg-current transition-all" />
+            <span className="block h-0.5 w-full bg-current transition-all" />
+            <span className="block h-0.5 w-full bg-current transition-all" />
+          </div>
+        </button>
+
+        {/* Overlay & Panel avec Framer Motion */}
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              {/* Overlay sombre */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setIsOpen(false)}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                data-testid="menu-overlay"
+              />
+
+              {/* Panel du menu */}
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{
+                  type: "spring",
+                  damping: 30,
+                  stiffness: 300,
+                }}
+                className="fixed left-0 top-0 bottom-0 w-[300px] sm:w-[350px] bg-white z-50 shadow-2xl"
+                data-testid="nav-menu-popup"
               >
-                <PopoverPanel className="flex flex-col absolute w-full pr-4 sm:pr-0 sm:w-1/3 2xl:w-1/4 sm:min-w-min h-[calc(100vh-1rem)] z-30 inset-x-0 text-sm text-ui-fg-on-color m-2 backdrop-blur-2xl">
-                  <div
-                    data-testid="nav-menu-popup"
-                    className="flex flex-col h-full bg-[rgba(3,7,18,0.5)] rounded-rounded justify-between p-6"
-                  >
-                    <div className="flex justify-end" id="xmark">
-                      <button data-testid="close-menu-button" onClick={close}>
-                        <XMark />
-                      </button>
-                    </div>
-                    <ul className="flex flex-col gap-6 items-start justify-start">
-                      {Object.entries(SideMenuItems).map(([name, href]) => {
-                        return (
-                          <li key={name}>
+                <div className="flex flex-col h-full">
+                  {/* Header avec bouton fermeture */}
+                  <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                    <span className="text-lg font-semibold text-gray-900">
+                      Menu
+                    </span>
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+                      data-testid="close-menu-button"
+                      aria-label="Fermer le menu"
+                    >
+                      <XMark className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Liste des liens avec animation échelonnée */}
+                  <nav className="flex-1 overflow-y-auto p-6">
+                    <ul className="flex flex-col gap-4">
+                      {Object.entries(SideMenuItems).map(
+                        ([name, href], index) => (
+                          <motion.li
+                            key={name}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                          >
                             <LocalizedClientLink
                               href={href}
-                              className="text-3xl leading-10 hover:text-ui-fg-disabled"
-                              onClick={close}
+                              className="block text-2xl py-3 text-gray-900 hover:text-ui-fg-base transition-colors"
+                              onClick={() => setIsOpen(false)}
                               data-testid={`${name.toLowerCase()}-link`}
                             >
                               {name}
                             </LocalizedClientLink>
-                          </li>
+                          </motion.li>
                         )
-                      })}
+                      )}
                     </ul>
-                    <div className="flex flex-col gap-y-6">
-                      <div
-                        className="flex justify-between"
-                        onMouseEnter={toggleState.open}
-                        onMouseLeave={toggleState.close}
-                      >
-                        {regions && (
-                          <CountrySelect
-                            toggleState={toggleState}
-                            regions={regions}
-                          />
-                        )}
-                        <ArrowRightMini
-                          className={clx(
-                            "transition-transform duration-150",
-                            toggleState.state ? "-rotate-90" : ""
-                          )}
+                  </nav>
+
+                  {/* Footer avec sélecteur de pays */}
+                  <div className="border-t border-gray-200 p-6 space-y-4">
+                    <div
+                      className="flex items-center justify-between cursor-pointer"
+                      onMouseEnter={toggleState.open}
+                      onMouseLeave={toggleState.close}
+                    >
+                      {regions && (
+                        <CountrySelect
+                          toggleState={toggleState}
+                          regions={regions}
                         />
-                      </div>
-                      <Text className="flex justify-between txt-compact-small">
-                        © {new Date().getFullYear()} Medusa Store. All rights
-                        reserved.
-                      </Text>
+                      )}
                     </div>
+                    <Text className="text-xs text-gray-500">
+                      © {new Date().getFullYear()} Graph and Shop
+                    </Text>
                   </div>
-                </PopoverPanel>
-              </Transition>
+                </div>
+              </motion.div>
             </>
           )}
-        </Popover>
+        </AnimatePresence>
       </div>
-    </div>
+    </>
   )
 }
 
