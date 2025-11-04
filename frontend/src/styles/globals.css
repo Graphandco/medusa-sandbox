@@ -110,3 +110,17 @@
     @apply text-[32px] leading-[44px] font-semibold;
   }
 }
+
+/* body {
+  background-color: rgb(35, 35, 45);
+  color: white;
+}
+.bg-white {
+  background-color: rgb(26, 26, 31) !important;
+}
+.bg-ui-bg-base {
+  background-color: rgb(27, 27, 34) !important;
+}
+.text-ui-fg-base {
+  color: white !important;
+} */
