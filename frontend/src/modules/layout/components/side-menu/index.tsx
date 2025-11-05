@@ -13,6 +13,7 @@ const SideMenuItems = {
   Accueil: "/",
   Boutique: "/store",
   Compte: "/account",
+  Contact: "/contact",
 }
 
 const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
