@@ -130,6 +130,18 @@
   }
 }
 
+/* Animation tween scale pour la galerie d'images */
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* body {
   background-color: rgb(35, 35, 45);
   color: white;
