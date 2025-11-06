@@ -2,7 +2,6 @@ import React, { Suspense } from "react"
 
 import ImageGallery from "@modules/products/components/image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
-import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
@@ -29,18 +28,19 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   return (
     <>
       <div
-        className="content-container flex flex-col small:flex-row small:items-start py-6 relative"
+        className="content-container py-6 relative"
         data-testid="product-container"
       >
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
-          <ProductInfo product={product} />
-          <ProductTabs product={product} />
-        </div>
-        <div className="block w-full relative">
-          <ImageGallery images={product?.images || []} />
-        </div>
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
-          <ProductOnboardingCta />
+        {/* Layout mobile : titre/description/infos en haut, galerie en bas */}
+        <div className="flex flex-col md:hidden gap-y-8">
+          <div className="flex flex-col gap-y-6">
+            <ProductInfo product={product} />
+            <ProductTabs product={product} />
+          </div>
+          <div className="block w-full relative">
+            <ImageGallery images={product?.images || []} />
+          </div>
+          {/* ProductActionsWrapper nécessaire pour MobileActions (MobileActions se cache lui-même sur desktop) */}
           <Suspense
             fallback={
               <ProductActions
@@ -52,6 +52,31 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           >
             <ProductActionsWrapper id={product.id} region={region} />
           </Suspense>
+        </div>
+
+        {/* Layout desktop : 2 colonnes */}
+        <div className="hidden md:grid md:grid-cols-2 md:gap-x-8 md:items-start">
+          {/* Colonne gauche : Carrousel d'images */}
+          <div className="block w-full relative">
+            <ImageGallery images={product?.images || []} />
+          </div>
+
+          {/* Colonne droite : Titre, description, actions, infos */}
+          <div className="flex flex-col gap-y-8">
+            <ProductInfo product={product} />
+            <Suspense
+              fallback={
+                <ProductActions
+                  disabled={true}
+                  product={product}
+                  region={region}
+                />
+              }
+            >
+              <ProductActionsWrapper id={product.id} region={region} />
+            </Suspense>
+            <ProductTabs product={product} />
+          </div>
         </div>
       </div>
       <div

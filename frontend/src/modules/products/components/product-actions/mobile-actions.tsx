@@ -52,27 +52,17 @@ const MobileActions: React.FC<MobileActionsProps> = ({
 
   const isSimple = isSimpleProduct(product)
 
+  if (!show) {
+    return null
+  }
+
   return (
     <>
-      <div
-        className={clx("lg:hidden inset-x-0 bottom-0 fixed z-50", {
-          "pointer-events-none": !show,
-        })}
-      >
-        <Transition
-          as={Fragment}
-          show={show}
-          enter="ease-in-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-300"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+      <div className="md:hidden inset-x-0 bottom-0 fixed z-50 animate-[slideUp_0.3s_ease-out]">
+        <div
+          className="bg-white flex flex-col gap-y-3 justify-center items-center text-large-regular p-4 w-full border-t border-gray-200 shadow-lg"
+          data-testid="mobile-actions"
         >
-          <div
-            className="bg-white flex flex-col gap-y-3 justify-center items-center text-large-regular p-4 h-full w-full border-t border-gray-200"
-            data-testid="mobile-actions"
-          >
             <div className="flex items-center gap-x-2">
               <span data-testid="mobile-title">{product.title}</span>
               <span>—</span>
@@ -131,7 +121,6 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               </Button>
             </div>
           </div>
-        </Transition>
       </div>
       <Transition appear show={state} as={Fragment}>
         <Dialog as="div" className="relative z-[75]" onClose={close}>
