@@ -77,7 +77,7 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                   damping: 30,
                   stiffness: 300,
                 }}
-                className="fixed left-0 top-0 bottom-0 w-[300px] sm:w-[350px] bg-white z-50 shadow-2xl"
+                className="fixed left-0 top-0 bottom-0 w-[300px] sm:w-[350px] bg-white z-[9999] shadow-2xl"
                 data-testid="nav-menu-popup"
               >
                 <div className="flex flex-col h-full">

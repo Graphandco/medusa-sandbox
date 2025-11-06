@@ -30,14 +30,15 @@ export default async function Nav() {
     <div className="sticky top-0 inset-x-0 z-50 group">
       <header className="relative py-4 mx-auto border-b duration-200 bg-white border-ui-border-base">
         <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
-          <div className="flex-1 basis-0 h-full flex items-center gap-x-4">
+          <div className="h-full flex flex-row-reverse md:flex-row  items-center gap-x-4">
             <div className="flex items-center h-full">
               <LocalizedClientLink
                 href="/"
-                className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
+                className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase flex items-center gap-x-2"
                 data-testid="nav-store-link"
               >
                 <Image src="/logo.svg" alt="Logo" width={30} height={30} />
+                Jewels & Co
               </LocalizedClientLink>
             </div>
             <SideMenu regions={regions} />
