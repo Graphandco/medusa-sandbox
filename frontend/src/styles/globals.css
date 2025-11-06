@@ -115,6 +115,21 @@
   }
 }
 
+/* Styles pour positionner les toasts */
+@layer utilities {
+  /* Cibler le conteneur des toasts Medusa UI */
+  [data-radix-toast-viewport],
+  [data-sonner-toaster],
+  [data-medusa-toaster] {
+    position: fixed !important;
+    bottom: 1rem !important;
+    right: 1rem !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 9999 !important;
+  }
+}
+
 /* body {
   background-color: rgb(35, 35, 45);
   color: white;
